@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Observers\PermissionObserver;
+use App\Permission;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 
@@ -16,10 +18,9 @@ class AppServiceProvider extends ServiceProvider
     {
         Schema::defaultStringLength(191);
 
-        // view()->composer('roles.form', function($view) {
-        //     $allPermissions = \App\Permission::all();
-        //     $view->with(compact('allPermissions'));
-        // });
+        //model events
+        Permission::observe(PermissionObserver::class);
+
 
         view()->composer('users.form', function($view) {
             $allRoles = \App\Role::all();

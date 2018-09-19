@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Permission;
 use App\Http\Requests\PermissionForm;
-use Illuminate\Http\Request;
+use App\Permission;
 use App\Traits\Slugify;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class PermissionController extends Controller
@@ -101,25 +102,18 @@ class PermissionController extends Controller
         return redirect('/admin/permissions');
     }
 
+
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified resource(s) from storage.
      *
      * @param  \App\Permission $permission
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Permission $permission)
-    {        
-        //update all roles that has the permission
-        $allRoles = $permission->roles;
-
-        foreach($allRoles as $role){
-            $role->revokePrivilegeTo(Permission::class, $permission->slug);
-        }
-        
-        $permission->delete();
-
-        session()->flash('message', 'The permission has been deleted!');
-
+    public function destroy($ids)
+    {
+        Permission::destroy($ids);
+        //see the model event 'deleted' which contains a sequence of actions:
+        //\App\Observers\PermissionObserver        
         return redirect('/admin/permissions');
     }
 }
