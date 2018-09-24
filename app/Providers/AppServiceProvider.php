@@ -21,10 +21,10 @@ class AppServiceProvider extends ServiceProvider
         //model events
         Permission::observe(PermissionObserver::class);
 
-
         view()->composer('users.form', function($view) {
             $allRoles = \App\Role::all();
-            $view->with(compact('allRoles'));
+            $allPermissions = \App\Permission::all();
+            $view->with(compact('allRoles', 'allPermissions'));
         });
     }
 

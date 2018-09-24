@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Permission;
 use App\Role;
 use App\User;
 use Illuminate\Http\Request;
@@ -66,6 +67,18 @@ class UserController extends Controller
                 //roles assignment
                 $user->givePrivilegeTo(Role::class, $role->slug);
             }
+        }
+
+        //some permissions checked
+        if ($request->permissions) {
+
+            foreach ($request->permissions as $permission) {
+
+                $permission = Permission::where('id', '=', $permission)->firstOrFail();
+
+                //permissions assignment
+                $user->givePrivilegeTo(Permission::class, $permission->slug);
+            }
         } 
 
         session()->flash('message', 'A new user has been added!');
@@ -92,12 +105,6 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        
-        // foreach ($user->roles as $r) {
-        //     dump($r->slug);
-        // }
-        // dd('end of debug');
-
         return view('users.edit', compact('user'));
     }
 
@@ -137,7 +144,23 @@ class UserController extends Controller
                     $user->givePrivilegeTo(Role::class, $privilege->slug);
                 } 
             }    
-        }    
+        }
+
+        //update permissions
+        //revoke all permissions for starter
+        $user->privileges(Permission::class)->detach();
+
+        //assign the selected permissions only if checked
+        if ($request->permissions) {
+
+            foreach (Permission::all() as $privilege) {
+
+                if (in_array($privilege->id, $request->permissions)) {
+
+                    $user->givePrivilegeTo(Permission::class, $privilege->slug);
+                } 
+            }    
+        }      
 
         session()->flash('message', 'The user has been updated!');
 
@@ -155,6 +178,7 @@ class UserController extends Controller
         $user->delete();
 
         $user->privileges(Role::class)->detach();
+        $user->privileges(Permission::class)->detach();
         
         session()->flash('message', 'The user has been deleted!');
 

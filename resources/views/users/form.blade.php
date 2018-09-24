@@ -121,6 +121,51 @@
 
 
 
+  @if ($allPermissions)
+
+  <div class="form-group">
+
+     <label for="permissions" >Permissions</label><br class="form-control" />
+
+    @foreach($allPermissions as $permission)
+
+        @php
+
+          if ( old('permissions') ) {
+
+            if ( in_array($permission->id, old('permissions', [])) ) {
+
+                  $bChecked = true;
+
+                } else {
+
+                  $bChecked = false;
+              }
+
+          } else {
+
+              if ( isset($user) && $user->hasPrivilege(\App\Permission::class, $permission->slug) ) {
+
+                  $bChecked = true;
+
+                } else {
+                  
+                  $bChecked = false;
+              }
+          }
+
+        @endphp
+
+        <input type="checkbox" name="permissions[]" value="{{ $permission->id }}" {{ $bChecked ? ' checked' : '' }} /> {{ $permission->name }}<br />
+      
+    @endforeach
+
+  </div>
+
+  @endif
+
+
+
 
 
 
