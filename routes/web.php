@@ -19,19 +19,22 @@ Route::group(['middleware' => ['auth', 'role:admin,']], function () {
 			return view('layouts.admin.master');
 		});
 
-		
-
 		Route::put('/users/update', function () {
 			$user = request()->user;
-			dd($user);
+			// dd($user);
 
 		});
 
 		Route::resource('/users', 'UserController');
-
 		Route::resource('/roles', 'RoleController');
-		Route::resource('/permissions', 'PermissionController');
 
+		Route::resource('/permissions', 'PermissionController');		
+		Route::get('/permissions', 'PermissionController@index');
+		Route::delete('/permissions', 'PermissionController@bulkDelete');
+
+		Route::get('/site', function () {
+			return view('layouts.admin.master');
+		});
 
 	});	
 });

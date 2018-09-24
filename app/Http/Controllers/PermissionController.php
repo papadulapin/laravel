@@ -116,4 +116,10 @@ class PermissionController extends Controller
         //\App\Observers\PermissionObserver        
         return redirect('/admin/permissions');
     }
+
+    public function bulkDelete(Request $request)
+    {
+        $this->destroy(explode(',', $request->permissions));
+        return redirect('/admin/permissions');
+    }
 }
