@@ -119,7 +119,7 @@ class PermissionController extends Controller
 
     public function bulkDelete(Request $request)
     {
-        $this->destroy(explode(',', $request->permissions));
+        $this->destroy(explode(',', $request->ids));
         return redirect('/admin/permissions');
     }
 }

@@ -7,22 +7,28 @@ $("#check-all").change(function () {
 $("#bulk-action").click(function() {
 
     var chkArray = [];
+    var labels = [];
 	
 	$(".ids:checked").each(function() {
+		var msg = $(this).parent().siblings('.td-label').html();
+		console.log('debug: ' + msg );
+		labels.push(msg);
 		chkArray.push($(this).val());
 	});
 	
+	var selectedLabels;
 	var selected;
 	selected = chkArray.join(',') ;
+	selectedLabels = labels.join('<br>') ;
 
 	$('#ids').val(chkArray);
 	
 	if(selected.length > 0){
-		// alert("You have selected " + selected);	
-		$('#bulk-action').attr('data-target','#modal');
+		$('#modal-message').html('<p>Are you sure you want to delete the selected? </p>' + '<p>' + selectedLabels + '</p>'  );
+		$('#modal-actions').show();
 
 	}else{
-		alert("Please check one of the checkboxes");			
-		$('#bulk-action').attr('data-target','');
+		$('#modal-message').html('<p>Please tick at least one checkbox.</p>');
+		$('#modal-actions').hide();
 	}
 });
